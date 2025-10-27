@@ -1,11 +1,15 @@
-import pandas as pd
+from sklearn.model_selection import train_test_split
+from models.dt import DecisionTree
 from preprocessing import PreProcessing
 
-temp = pd.read_csv("data/adult.data")
-df = temp[:10]
-print(df.head())
-prep = PreProcessing(df)
-X, y = prep.process()
+import pandas as pd
 
-print(X.head())
-print(y.unique())
+df = pd.read_csv("data/adult.data")
+pre = PreProcessing(df)
+X, y = pre.process()
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+tree = DecisionTree(max_depth=5)
+tree.train(X_train, y_train)
+print("Accuracy:", tree.evaluate(X_test, y_test))
