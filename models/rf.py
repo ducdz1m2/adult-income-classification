@@ -1,12 +1,8 @@
 from sklearn.ensemble import RandomForestClassifier
 
 class RandomForest_Model:
-    def __init__(self, n_estimators=100, max_depth=None, random_state=42):
-        self.model = RandomForestClassifier(
-            n_estimators=n_estimators,
-            max_depth=max_depth,
-            random_state=random_state
-        )
+    def __init__(self, **kwargs):
+        self.model = RandomForestClassifier(**kwargs)
 
     def train(self, X_train, Y_train):
         self.model.fit(X_train, Y_train)

@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder,MinMaxScaler
 from sklearn.compose import ColumnTransformer
 
 
@@ -45,7 +45,7 @@ class PreProcessing:
         numeric_cols = X.select_dtypes(exclude='object').columns
 
         transformer = ColumnTransformer([
-            ('num', StandardScaler(), numeric_cols),
+            ('num',MinMaxScaler(), numeric_cols),
             ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols)
         ])
 

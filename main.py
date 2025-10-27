@@ -28,11 +28,11 @@ if __name__ == "__main__":
     )
 
     # 4️⃣ Huấn luyện mô hình 
-    tree = DecisionTree(max_depth=6)
+    tree = DecisionTree(criterion= 'gini',max_depth=10,min_samples_split=2, min_samples_leaf=1)
     tree.train(X_train, y_train)
     print("✅ Huấn luyện xong DecisionTreeClassifier.")
 
-    knn = KNN(n_neighbors=5, weights='distance')
+    knn = KNN(n_neighbors=11,p=2, weights='uniform')
     knn.train(X_train, y_train)
     print("✅ Huấn luyện xong KNeighborsClassifier.")
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     nb.train(X_train, y_train)
     print("Huấn luyện xong mô hình NaiveBayesClassifier.")
 
-    rf = RandomForest_Model(n_estimators=200, max_depth=None, random_state=42)
+    rf = RandomForest_Model(n_estimators=200, min_samples_split = 10, min_samples_leaf = 1, max_depth=None, bootstrap=True, random_state=42)
     rf.train(X_train, y_train)
     print("Huấn luyện xong mô hình RandomForestClassifier.")
 
@@ -98,3 +98,22 @@ if __name__ == "__main__":
 # workclass_Private = 1 nếu người đó làm Private, 0 nếu không.
 
 # marital-status_Married-civ-spouse = 1 nếu người đó married, 0 nếu không.
+
+# >>> Dữ liệu sau tiền xử lý: X=(30162, 104), y=(30162,)
+
+# === 🔎 Tuning Decision Tree ===
+# Best params: {'criterion': 'gini', 'max_depth': 10, 'min_samples_leaf': 1, 'min_samples_split': 2}
+# CV F1: 0.6575396211973845
+# CV F1: 0.6575396211973845
+
+# === 🔎 Tuning KNN ===
+# Best params: {'n_neighbors': 11, 'p': 2, 'weights': 'uniform'}
+# CV F1: 0.6328032819678856
+
+# === 🔎 Tuning Naive Bayes ===
+# Best params: {'var_smoothing': np.float64(0.1)}
+# CV F1: 0.6364977073433581
+
+# === 🔎 Tuning Random Forest ===
+# Best params: {'n_estimators': 200, 'min_samples_split': 10, 'min_samples_leaf': 1, 'max_depth': None, 'bootstrap': True}
+# CV F1: 0.6907034208522354
