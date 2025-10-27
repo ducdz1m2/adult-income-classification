@@ -9,9 +9,3 @@ class Naive_Bayes_Model:
 
     def predict(self, X):
         return self.model.predict(X)
-    
-    def predict_proba(self, X):
-        return self.model.predict_proba(X)
-    
-    def get_model(self):
-        return self.model
