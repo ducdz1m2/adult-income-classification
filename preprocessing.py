@@ -1,10 +1,7 @@
-import sys
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
 from sklearn.compose import ColumnTransformer
 
-# Đảm bảo in Unicode trên Windows
-sys.stdout.reconfigure(encoding='utf-8')
 
 class PreProcessing:
     def __init__(self, df):
