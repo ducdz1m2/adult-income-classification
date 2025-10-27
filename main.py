@@ -4,6 +4,8 @@ import sys
 from preprocessing import PreProcessing
 from models.dt import DecisionTree
 from models.knn import KNN 
+from models.nb import Naive_Bayes_Model
+from models.rf import RandomForest_Model
 from evaluate import Evaluator
 from plot import Plotter
 
@@ -34,6 +36,15 @@ if __name__ == "__main__":
     knn.train(X_train, y_train)
     print("✅ Huấn luyện xong KNeighborsClassifier.")
 
+    
+    nb = Naive_Bayes_Model()
+    nb.train(X_train, y_train)
+    print("Huấn luyện xong mô hình NaiveBayesClassifier.")
+
+    rf = RandomForest_Model(n_estimators=200, max_depth=None, random_state=42)
+    rf.train(X_train, y_train)
+    print("Huấn luyện xong mô hình RandomForestClassifier.")
+
     # 5️⃣ Đánh giá mô hình
     evaluator = Evaluator(tree.model, X_test, y_test)
     results = evaluator.evaluate()
@@ -46,6 +57,18 @@ if __name__ == "__main__":
     results_knn = evaluator_knn.evaluate()
     print("\n>>> Kết quả đánh giá KNN:")
     for metric, value in results_knn.items():
+        print(f"- {metric}: {value:.4f}")
+
+    evaluator_nb = Evaluator(nb.model,X_test, y_test)
+    results_nb = evaluator_nb.evaluate()
+    print("\n Kết quả đánh giá Navie Bayes:")
+    for metric, value in results_nb.items():
+        print(f"- {metric}: {value:.4f}")
+
+    evaluator_rf = Evaluator(rf.model,X_test, y_test)
+    results_rf = evaluator_rf.evaluate()
+    print("\n Kết quả đánh giá Random Forests:")
+    for metric, value in results_rf.items():
         print(f"- {metric}: {value:.4f}")
 
     # 6️⃣ Top feature quan trọng
