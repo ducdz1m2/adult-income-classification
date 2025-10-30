@@ -19,7 +19,7 @@ def load_adult_test(file_path):
     return df
 
 if __name__ == "__main__":
-    # 1️⃣ Đọc dữ liệu
+    # I Đọc dữ liệu
     df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True, encoding='utf-8')
     
     visualizer = DataVisualizer(df_train)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     df_test = load_adult_test("data/adult.test")
 
 
-    # 2️⃣ Tiền xử lý
+    # II Tiền xử lý
     pre_train = PreProcessing(df_train)
     X_train, y_train = pre_train.process()
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     print(f">>> Train: X={X_train.shape}, y={y_train.shape}")
     print(f">>> Test: X={X_test.shape}, y={y_test.shape}")
 
-    # 3️⃣ Huấn luyện mô hình 
+    # III Huấn luyện mô hình 
     tree = DecisionTree(criterion='entropy', max_depth=12, min_samples_split=4, min_samples_leaf=12)
     tree.train(X_train, y_train)
     
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     )
     rf.train(X_train, y_train)
 
-    # 4️⃣ Đánh giá mô hình trên test set
+    # IV Đánh giá mô hình trên test set
     for name, model in [("Decision Tree", tree.model),
                         ("KNN", knn.model),
                         ("Naive Bayes", nb.model),
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         for metric, value in results.items():
             print(f"- {metric}: {value:.4f}")
 
-    # 5️⃣ Feature importance Decision Tree
+    # V Feature importance Decision Tree
     top_n = 15
     feature_names = list(X_train.columns)
     importances = tree.model.feature_importances_
@@ -98,3 +98,5 @@ if __name__ == "__main__":
 
     plotter = Plotter(tree.model, X_test, y_test)
     plotter.feature_importance(feature_names, top_n=top_n)
+
+print("\nThực thi thành công.")
