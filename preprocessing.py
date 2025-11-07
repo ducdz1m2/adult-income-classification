@@ -37,7 +37,20 @@ class PreProcessing:
         if fit_encoder is not None:
             self.fit_encoder = fit_encoder
 
-        X = self.df.drop('income', axis=1)
+        X = self.df.drop(['income', 'fnlwgt', 'education'], axis=1)  # Bỏ 2 cột
+
+        # Chỉ gộp quốc gia khi dùng OneHot
+        if use_onehot:
+            country_map = {
+                'United-States': 'US', 
+                'Canada': 'North America', 'Mexico': 'North America',
+                'India': 'India', 'China': 'China', 'Japan': 'Japan',
+                'England': 'UK', 'Scotland': 'UK', 'Ireland': 'UK', 
+                'Germany': 'Germany', 'Italy': 'Germany', 'Poland': 'Germany', 'Portugal': 'Germany', 'Greece': 'Germany',
+                # Nhóm còn lại là 'Other'
+            }
+            X['native-country'] = X['native-country'].map(lambda x: country_map.get(x, 'Other'))
+
         y = self.df['income']
 
         categorical_cols = X.select_dtypes(include='object').columns
@@ -59,10 +72,9 @@ class PreProcessing:
             all_columns = list(numeric_cols) + list(cat_feature_names)
             X_df = pd.DataFrame(X_processed, columns=all_columns)
         else:
-            # Chỉ giữ numeric + label encoded categorical
             X_df = X.copy()
             for col in categorical_cols:
                 X_df[col] = LabelEncoder().fit_transform(X_df[col])
-            # Nếu X đã có label encoder trước đó, có thể tái sử dụng
-            # nhưng ở đây chỉ demo simple
+
         return X_df, y
+

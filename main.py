@@ -23,12 +23,12 @@ if __name__ == "__main__":
     df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True, encoding='utf-8')
     df_test = load_adult_test("data/adult.test")
 
-    visualizer = DataVisualizer(df_train)
-    visualizer.plot_numeric_pair()
-    visualizer.plot_categorical_pair(top_n=6)
-    visualizer.plot_income_vs_feature('workclass')
-    visualizer.plot_box_numeric_vs_income('age')
-    visualizer.plot_pie_income()
+    # visualizer = DataVisualizer(df_train)
+    # visualizer.plot_numeric_pair()
+    # visualizer.plot_categorical_pair(top_n=6)
+    # visualizer.plot_income_vs_feature('workclass')
+    # visualizer.plot_box_numeric_vs_income('age')
+    # visualizer.plot_pie_income()
 
     # -------------------
     # Flow 1: LabelEncoder
