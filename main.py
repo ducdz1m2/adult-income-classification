@@ -2,25 +2,31 @@ import pandas as pd
 from data_plot import DataVisualizer
 from preprocessing import PreProcessing
 from models.dt import DecisionTree
-from models.knn import KNN 
+from models.knn import KNN
 from models.nb import Naive_Bayes_Model
 from models.rf import RandomForest_Model
+from models.svm import SVM_Model
+from models.ada import AdaBoost_Model
 from evaluate import Evaluator
 from plot import Plotter
 import sys
 
-sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def load_adult_test(file_path):
-    df = pd.read_csv(file_path, header=None, skipinitialspace=True, encoding='utf-8', comment='|')
-    df[14] = df[14].str.strip().str.replace('.', '', regex=False)
+    df = pd.read_csv(
+        file_path, header=None, skipinitialspace=True, encoding="utf-8", comment="|"
+    )
+    df[14] = df[14].str.strip().str.replace(".", "", regex=False)
     return df
 
 
 if __name__ == "__main__":
     # I. Đọc dữ liệu
-    df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True, encoding='utf-8')
+    df_train = pd.read_csv(
+        "data/adult.data", header=None, skipinitialspace=True, encoding="utf-8"
+    )
     df_test = load_adult_test("data/adult.test")
 
     # visualizer = DataVisualizer(df_train)
@@ -36,36 +42,53 @@ if __name__ == "__main__":
     print("\n=== FLOW 1: LabelEncoder ===")
     pre_train = PreProcessing(df_train)
     df_train_clean = pre_train.clean_data()
-    df_train_clean = pre_train.encode_labels('income', fit_encoder=True)
+    df_train_clean = pre_train.encode_labels("income", fit_encoder=True)
     X_train, y_train = pre_train.process(use_onehot=False)
 
     pre_test = PreProcessing(df_test, fit_encoder=False)
     pre_test.label_encoder = pre_train.label_encoder
     df_test_clean = pre_test.clean_data()
-    df_test_clean = pre_test.encode_labels('income', fit_encoder=False)
+    df_test_clean = pre_test.encode_labels("income", fit_encoder=False)
     X_test, y_test = pre_test.process(use_onehot=False)
 
     print(f">>> Train: X={X_train.shape}, y={y_train.shape}")
     print(f">>> Test: X={X_test.shape}, y={y_test.shape}")
 
     # Huấn luyện mô hình
-    tree = DecisionTree(criterion='entropy', max_depth=12, min_samples_split=4, min_samples_leaf=12)
+    tree = DecisionTree(
+        criterion="entropy", max_depth=12, min_samples_split=4, min_samples_leaf=12
+    )
     tree.train(X_train, y_train)
-    knn = KNN(n_neighbors=11, p=2, weights='uniform')
+    knn = KNN(n_neighbors=11, p=2, weights="uniform")
     knn.train(X_train, y_train)
     nb = Naive_Bayes_Model()
     nb.train(X_train, y_train)
     rf = RandomForest_Model(
-        n_estimators=200, max_depth=None, min_samples_split=10,
-        min_samples_leaf=1, max_features='sqrt', bootstrap=True, random_state=42
+        n_estimators=200,
+        max_depth=None,
+        min_samples_split=10,
+        min_samples_leaf=1,
+        max_features="sqrt",
+        bootstrap=True,
+        random_state=42,
     )
     rf.train(X_train, y_train)
 
+    svm = SVM_Model(kernel="rbf", C=1.0, gamma="scale", random_state=42)
+    svm.train(X_train, y_train)
+
+    ada = AdaBoost_Model(n_estimators=200, learning_rate=0.5, random_state=42)
+    ada.train(X_train, y_train)
+
     # Đánh giá
-    for name, model in [("Decision Tree", tree.model),
-                        ("KNN", knn.model),
-                        ("Naive Bayes", nb.model),
-                        ("Random Forest", rf.model)]:
+    for name, model in [
+        ("Decision Tree", tree.model),
+        ("KNN", knn.model),
+        ("Naive Bayes", nb.model),
+        ("Random Forest", rf.model),
+        ("SVM", svm.model),
+        ("AdaBoost", ada.model),
+    ]:
         evaluator = Evaluator(model, X_test, y_test)
         results = evaluator.evaluate()
         print(f"\n>>> Kết quả đánh giá {name}:")
@@ -103,26 +126,43 @@ if __name__ == "__main__":
     print(f">>> Test OH: X={X_test_oh.shape}, y={y_test_oh.shape}")
 
     # Huấn luyện mô hình
-    tree_oh = DecisionTree(criterion='entropy', max_depth=12, min_samples_split=4, min_samples_leaf=12)
+    tree_oh = DecisionTree(
+        criterion="entropy", max_depth=12, min_samples_split=4, min_samples_leaf=12
+    )
     tree_oh.train(X_train_oh, y_train_oh)
 
-    knn_oh = KNN(n_neighbors=11, p=2, weights='uniform')
+    knn_oh = KNN(n_neighbors=11, p=2, weights="uniform")
     knn_oh.train(X_train_oh, y_train_oh)
 
     nb_oh = Naive_Bayes_Model()
     nb_oh.train(X_train_oh, y_train_oh)
 
     rf_oh = RandomForest_Model(
-        n_estimators=200, max_depth=None, min_samples_split=10,
-        min_samples_leaf=1, max_features='sqrt', bootstrap=True, random_state=42
+        n_estimators=200,
+        max_depth=None,
+        min_samples_split=10,
+        min_samples_leaf=1,
+        max_features="sqrt",
+        bootstrap=True,
+        random_state=42,
     )
     rf_oh.train(X_train_oh, y_train_oh)
 
+    svm_oh = SVM_Model(kernel="rbf", C=1.0, gamma="scale", random_state=42)
+    svm_oh.train(X_train_oh, y_train_oh)
+
+    ada_oh = AdaBoost_Model(n_estimators=200, learning_rate=0.5, random_state=42)
+    ada_oh.train(X_train_oh, y_train_oh)
+
     # Đánh giá
-    for name, model in [("Decision Tree", tree_oh.model),
-                        ("KNN", knn_oh.model),
-                        ("Naive Bayes", nb_oh.model),
-                        ("Random Forest", rf_oh.model)]:
+    for name, model in [
+        ("Decision Tree", tree_oh.model),
+        ("KNN", knn_oh.model),
+        ("Naive Bayes", nb_oh.model),
+        ("Random Forest", rf_oh.model),
+        ("SVM", svm_oh.model),
+        ("AdaBoost", ada_oh.model),
+    ]:
         evaluator = Evaluator(model, X_test_oh, y_test_oh)
         results = evaluator.evaluate()
         print(f"\n>>> Kết quả đánh giá {name} (OH):")
