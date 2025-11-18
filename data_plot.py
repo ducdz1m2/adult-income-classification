@@ -1,13 +1,15 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
 
 
 class DataVisualizer:
     def __init__(self, df):
         self.df = df.copy()
-        self.clean_columns()
+        self._clean_columns()
 
-    def clean_columns(self):
+    def _clean_columns(self):
+        """Đặt tên cột và xóa khoảng trắng ở cột object"""
         self.df.columns = [
             "age",
             "workclass",
@@ -30,6 +32,7 @@ class DataVisualizer:
         )
 
     def plot_numeric_pair(self, cols=None):
+        """Vẽ histogram 2 cột số"""
         if cols is None:
             cols = self.df.select_dtypes(include="number").columns[:2]
         fig, axes = plt.subplots(1, 2, figsize=(12, 4))
@@ -40,6 +43,7 @@ class DataVisualizer:
         plt.show()
 
     def plot_categorical_pair(self, cols=None, top_n=5):
+        """Vẽ bar chart top_n category của 2 cột"""
         if cols is None:
             cols = self.df.select_dtypes(include="object").columns[:2]
         fig, axes = plt.subplots(1, 2, figsize=(12, 4))
@@ -51,6 +55,7 @@ class DataVisualizer:
         plt.show()
 
     def plot_income_vs_feature(self, feature):
+        """So sánh số lượng income theo từng giá trị của feature"""
         plt.figure(figsize=(6, 4))
         sns.countplot(
             x=feature,
@@ -65,6 +70,7 @@ class DataVisualizer:
         plt.show()
 
     def plot_pie_income(self):
+        """Biểu đồ tròn phân phối income"""
         counts = self.df["income"].value_counts()
         plt.figure(figsize=(5, 5))
         plt.pie(
@@ -79,6 +85,7 @@ class DataVisualizer:
         plt.show()
 
     def plot_box_numeric_vs_income(self, col):
+        """Boxplot của cột số theo income"""
         plt.figure(figsize=(6, 4))
         sns.boxplot(x="income", y=col, data=self.df, palette="Set3")
         plt.title(f"{col} by Income")
