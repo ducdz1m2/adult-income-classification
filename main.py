@@ -1,15 +1,17 @@
+import sys
+
 import pandas as pd
+
 from data_plot import DataVisualizer
-from preprocessing import PreProcessing
+from evaluate import Evaluator
+from models.ada import AdaBoost_Model
 from models.dt import DecisionTree
 from models.knn import KNN
 from models.nb import Naive_Bayes_Model
 from models.rf import RandomForest_Model
 from models.svm import SVM_Model
-from models.ada import AdaBoost_Model
-from evaluate import Evaluator
 from plot import Plotter
-import sys
+from preprocessing import PreProcessing
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
