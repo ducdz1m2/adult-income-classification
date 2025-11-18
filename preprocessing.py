@@ -51,6 +51,7 @@ class PreProcessing:
         if fit_encoder is not None:
             self.fit_encoder = fit_encoder
 
+        # bỏ 3 cột để tối ưu kết quả, comment lại để giữ
         X = self.df.drop(["income", "fnlwgt", "education"], axis=1)
 
         if use_onehot:
