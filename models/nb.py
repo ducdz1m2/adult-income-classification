@@ -1,6 +1,6 @@
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 
-class Naive_Bayes_Model:
+class NaiveBayes_Model:
     def __init__(self, **kwargs):
         self.model = MultinomialNB(**kwargs)
 

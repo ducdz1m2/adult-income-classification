@@ -2,9 +2,9 @@ import pandas as pd
 from sklearn.model_selection import GridSearchCV
 
 from models.ada import AdaBoost_Model
-from models.dt import DecisionTree
-from models.knn import KNN
-from models.nb import Naive_Bayes_Model
+from models.dt import DecisionTree_Model
+from models.knn import KNN_Model
+from models.nb import NaiveBayes_Model
 from models.rf import RandomForest_Model
 from models.svm import SVM_Model
 from preprocessing import PreProcessing
@@ -19,18 +19,18 @@ def load_adult_test(file_path):
 
 
 def tune(model, param_grid, X_train, y_train):
-    gs = GridSearchCV(
-        model, param_grid, cv=3, scoring="accuracy", n_jobs=-1
-    )  # n_jobs=-1: dùng tất cả các core sẵn có trên máy
+    gs = GridSearchCV(model, param_grid, cv=3, scoring="accuracy", n_jobs=-1)
     gs.fit(X_train, y_train)
     print("\nBest params:", gs.best_params_)
     print("Best score :", gs.best_score_)
     return gs.best_params_
 
 
+# Load dữ liệu
 df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True)
 df_test = load_adult_test("data/adult.test")
 
+# Xử lý dữ liệu
 pre_train = PreProcessing(df_train)
 pre_train.clean_data()
 pre_train.encode_labels("income", True)
@@ -44,43 +44,37 @@ X_test, y_test = pre_test.process(use_onehot=False)
 
 print("Dữ liệu:", X_train.shape, y_train.shape)
 
-print("\n=== Decision Tree ===")
-dt_params = {
-    "criterion": ["gini", "entropy"],
-    "max_depth": [6, 10, 12, 14, None],
-    "min_samples_split": [2, 4, 10],
-    "min_samples_leaf": [1, 2, 4, 8, 16],
-}
-tune(DecisionTree().model, dt_params, X_train, y_train)
+# Danh sách mô hình và hyperparameters
+models_and_params = [
+    ("Decision Tree", DecisionTree_Model().model, {
+        "criterion": ["gini", "entropy"],
+        "max_depth": [6, 10, 12, 14, None],
+        "min_samples_split": [2, 4, 10],
+        "min_samples_leaf": [1, 2, 4, 8, 16],
+    }),
+    ("KNN", KNN_Model().model, {
+        "n_neighbors": [5, 11, 17],
+        "p": [1, 2],
+        "weights": ["uniform", "distance"],
+    }),
+    ("Naive Bayes", NaiveBayes_Model().model, {}),
+    ("Random Forest", RandomForest_Model().model, {
+        "n_estimators": [50, 150, 250],
+        "max_depth": [None, 10, 20],
+        "min_samples_split": [2, 10],
+        "max_features": ["sqrt", "log2"],
+    }),
+    ("SVM", SVM_Model().model, {
+        "kernel": ["rbf", "linear"],
+        "C": [0.5, 1, 2],
+        "gamma": ["scale", "auto"],
+    }),
+    ("AdaBoost", AdaBoost_Model().model, {
+        "n_estimators": [50, 100, 200],
+        "learning_rate": [0.5, 1.0],
+    }),
+]
 
-print("\n=== KNN ===")
-knn_params = {
-    "n_neighbors": [5, 11, 17],
-    "p": [1, 2],
-    "weights": ["uniform", "distance"],
-}
-tune(KNN().model, knn_params, X_train, y_train)
-
-print("\n=== Naive Bayes ===")
-tune(Naive_Bayes_Model().model, {}, X_train, y_train)
-
-print("\n=== Random Forest ===")
-rf_params = {
-    "n_estimators": [50, 150, 250],
-    "max_depth": [None, 10, 20],
-    "min_samples_split": [2, 10],
-    "max_features": ["sqrt", "log2"],
-}
-tune(RandomForest_Model().model, rf_params, X_train, y_train)
-
-print("\n=== SVM ===")
-svm_params = {
-    "kernel": ["rbf", "linear"],
-    "C": [0.5, 1, 2],
-    "gamma": ["scale", "auto"],
-}
-tune(SVM_Model().model, svm_params, X_train, y_train)
-
-print("\n=== AdaBoost ===")
-ada_params = {"n_estimators": [50, 100, 200], "learning_rate": [0.5, 1.0]}
-tune(AdaBoost_Model().model, ada_params, X_train, y_train)
+for name, model, param in models_and_params:
+    print(f"{name}")
+    tune(model, param, X_train, y_train)

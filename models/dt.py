@@ -1,6 +1,6 @@
 from sklearn.tree import DecisionTreeClassifier
 
-class DecisionTree:
+class DecisionTree_Model:
     def __init__(self, **kwargs):
         # Có thể truyền max_depth, criterion, random_state...
         self.model = DecisionTreeClassifier(**kwargs)

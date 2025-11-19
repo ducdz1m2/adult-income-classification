@@ -3,9 +3,9 @@ import pandas as pd
 from data_plot import DataVisualizer
 from evaluate import Evaluator
 from models.ada import AdaBoost_Model
-from models.dt import DecisionTree
-from models.knn import KNN
-from models.nb import Naive_Bayes_Model
+from models.dt import DecisionTree_Model
+from models.knn import KNN_Model
+from models.nb import NaiveBayes_Model
 from models.rf import RandomForest_Model
 from models.svm import SVM_Model
 from plot import Plotter
@@ -35,12 +35,13 @@ visualizer.plot_box_numeric_vs_income("age")
 visualizer.plot_pie_income()
 
 # ---- Huấn luyện mô hình ----
+
 models = {
-    "Decision Tree": DecisionTree(
+    "Decision Tree": DecisionTree_Model(
         criterion="entropy", max_depth=12, min_samples_split=4, min_samples_leaf=12
     ),
-    "KNN": KNN(n_neighbors=11, p=2, weights="uniform"),
-    "Naive Bayes": Naive_Bayes_Model(),
+    "KNN": KNN_Model(n_neighbors=11, p=2, weights="uniform"),
+    "Naive Bayes": NaiveBayes_Model(),
     "Random Forest": RandomForest_Model(
         n_estimators=200,
         max_depth=None,
