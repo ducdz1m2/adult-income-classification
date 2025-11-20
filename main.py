@@ -75,3 +75,4 @@ for i in sorted_idx:
 
 plotter = Plotter(tree_model, X_test, y_test)
 plotter.feature_importance(feature_names, top_n=top_n)
+plotter.confusion_matrix()
