@@ -31,16 +31,12 @@ df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True)
 df_test = load_adult_test("data/adult.test")
 
 # Xử lý dữ liệu
-pre_train = PreProcessing(df_train)
-pre_train.clean_data()
-pre_train.encode_labels("income", True)
-X_train, y_train = pre_train.process(use_onehot=False)
+pre_train = PreProcessing(df=df_train)
+X_train, y_train = pre_train.run()
 
-pre_test = PreProcessing(df_test, fit_encoder=False)
-pre_test.label_encoder = pre_train.label_encoder
-pre_test.clean_data()
-pre_test.encode_labels("income", False)
-X_test, y_test = pre_test.process(use_onehot=False)
+pre_test = PreProcessing(df=df_test, is_test=False)
+pre_test.encoders = pre_train.encoders
+X_test, y_test = pre_test.run()
 
 print("Dữ liệu:", X_train.shape, y_train.shape)
 
