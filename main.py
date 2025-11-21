@@ -58,10 +58,9 @@ for i in range(0, 10):
     for name, model in models.items():
         model.train(X_train, y_train)
         evaluator = Evaluator(model.model, X_test, y_test)
+        print("\nKet qua mo hinh: " + name)
         results = evaluator.evaluate()
-        print(f"\n>>> Kết quả đánh giá {name}:")
-        for metric, value in results.items():
-            print(f"- {metric}: {value:.4f}")
+ 
 
 # # ---- Feature importance Decision Tree ----
 # tree_model = models["Decision Tree"].model
