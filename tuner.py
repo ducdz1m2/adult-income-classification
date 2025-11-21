@@ -60,15 +60,15 @@ models_and_params = [
         "min_samples_split": [2, 10],
         "max_features": ["sqrt", "log2"],
     }),
-    ("SVM", SVM_Model().model, {
-        "kernel": ["rbf", "linear"],
-        "C": [0.5, 1, 2],
-        "gamma": ["scale", "auto"],
-    }),
-    ("AdaBoost", AdaBoost_Model().model, {
-        "n_estimators": [50, 100, 200],
-        "learning_rate": [0.5, 1.0],
-    }),
+    # ("SVM", SVM_Model().model, {
+    #     "kernel": ["rbf", "linear"],
+    #     "C": [0.5, 1, 2],
+    #     "gamma": ["scale", "auto"],
+    # }),
+    # ("AdaBoost", AdaBoost_Model().model, {
+    #     "n_estimators": [50, 100, 200],
+    #     "learning_rate": [0.5, 1.0],
+    # }),
 ]
 
 for name, model, param in models_and_params:

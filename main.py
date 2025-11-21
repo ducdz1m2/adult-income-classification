@@ -27,18 +27,18 @@ print(f">>> Train: X={X_train.shape}, y={y_train.shape}")
 print(f">>> Test: X={X_test.shape}, y={y_test.shape}")
 
 # ---- Vẽ biểu đồ trực quan ----
-visualizer = DataVisualizer(pd.read_csv(train_file, header=None))
-visualizer.plot_numeric_pair(["age", "hours-per-week"])
-visualizer.plot_categorical_pair(["workclass", "education"], top_n=6)
-visualizer.plot_income_vs_feature("occupation")
-visualizer.plot_box_numeric_vs_income("age")
-visualizer.plot_pie_income()
+# visualizer = DataVisualizer(pd.read_csv(train_file, header=None))
+# visualizer.plot_numeric_pair(["age", "hours-per-week"])
+# visualizer.plot_categorical_pair(["workclass", "education"], top_n=6)
+# visualizer.plot_income_vs_feature("occupation")
+# visualizer.plot_box_numeric_vs_income("age")
+# visualizer.plot_pie_income()
 
 # ---- Huấn luyện mô hình ----
 
 models = {
     "Decision Tree": DecisionTree_Model(
-        criterion="entropy", max_depth=12, min_samples_split=4, min_samples_leaf=12
+        criterion="entropy", max_depth=10, min_samples_split=10, min_samples_leaf=1
     ),
     "KNN": KNN_Model(n_neighbors=11, p=2, weights="uniform"),
     "Naive Bayes": NaiveBayes_Model(),
@@ -49,30 +49,31 @@ models = {
         min_samples_leaf=1,
         max_features="sqrt",
         bootstrap=True,
-        random_state=42,
     ),
-    "SVM": SVM_Model(kernel="rbf", C=1.0, gamma="scale", random_state=42),
-    "AdaBoost": AdaBoost_Model(n_estimators=200, learning_rate=0.5, random_state=42),
+  
 }
 
-for name, model in models.items():
-    model.train(X_train, y_train)
-    evaluator = Evaluator(model.model, X_test, y_test)
-    results = evaluator.evaluate()
-    print(f"\n>>> Kết quả đánh giá {name}:")
-    for metric, value in results.items():
-        print(f"- {metric}: {value:.4f}")
+for i in range(0, 10):
+    print("=============================\nLan chay thu " + str(i))
+    for name, model in models.items():
+        model.train(X_train, y_train)
+        evaluator = Evaluator(model.model, X_test, y_test)
+        results = evaluator.evaluate()
+        print(f"\n>>> Kết quả đánh giá {name}:")
+        for metric, value in results.items():
+            print(f"- {metric}: {value:.4f}")
 
-# ---- Feature importance Decision Tree ----
-tree_model = models["Decision Tree"].model
-feature_names = list(X_train.columns)
-importances = tree_model.feature_importances_
-top_n = 15
-sorted_idx = importances.argsort()[-top_n:]
-print("\nTop feature names & importances:")
-for i in sorted_idx:
-    print(f"- {feature_names[i]}: {importances[i]:.4f}")
+# # ---- Feature importance Decision Tree ----
+# tree_model = models["Decision Tree"].model
+# feature_names = list(X_train.columns)
+# importances = tree_model.feature_importances_
+# top_n = 15
+# sorted_idx = importances.argsort()[-top_n:]
+# print("\nTop feature names & importances:")
+# for i in sorted_idx:
+#     print(f"- {feature_names[i]}: {importances[i]:.4f}")
 
-plotter = Plotter(tree_model, X_test, y_test)
-plotter.feature_importance(feature_names, top_n=top_n)
-plotter.confusion_matrix()
+# plotter = Plotter(tree_model, X_test, y_test)
+# plotter.feature_importance(feature_names, top_n=top_n)
+# plotter.confusion_matrix()
+
