@@ -65,7 +65,7 @@ class PreProcessing:
 
         # income thành 0/1
         self.df["income"] = self.df["income"].map({0: 0, 1: 1})
-
+        self.df.sample(frac=1).reset_index()
         X = self.df.drop("income", axis=1)
         y = self.df["income"]
         return X, y
