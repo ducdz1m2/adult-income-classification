@@ -26,11 +26,9 @@ def tune(model, param_grid, X_train, y_train):
     return gs.best_params_
 
 
-# Load dữ liệu
 df_train = pd.read_csv("data/adult.data", header=None, skipinitialspace=True)
 df_test = load_adult_test("data/adult.test")
 
-# Xử lý dữ liệu
 pre_train = PreProcessing(df=df_train)
 X_train, y_train = pre_train.run()
 
@@ -40,7 +38,6 @@ X_test, y_test = pre_test.run()
 
 print("Dữ liệu:", X_train.shape, y_train.shape)
 
-# Danh sách mô hình và hyperparameters
 models_and_params = [
     ("Decision Tree", DecisionTree_Model().model, {
         "criterion": ["gini", "entropy"],
@@ -60,15 +57,6 @@ models_and_params = [
         "min_samples_split": [2, 10],
         "max_features": ["sqrt", "log2"],
     }),
-    # ("SVM", SVM_Model().model, {
-    #     "kernel": ["rbf", "linear"],
-    #     "C": [0.5, 1, 2],
-    #     "gamma": ["scale", "auto"],
-    # }),
-    # ("AdaBoost", AdaBoost_Model().model, {
-    #     "n_estimators": [50, 100, 200],
-    #     "learning_rate": [0.5, 1.0],
-    # }),
 ]
 
 for name, model, param in models_and_params:

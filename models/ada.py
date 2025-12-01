@@ -1,4 +1,3 @@
-# models/ada.py
 from sklearn.ensemble import AdaBoostClassifier
 
 

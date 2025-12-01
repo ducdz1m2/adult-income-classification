@@ -1,4 +1,3 @@
-# models/svm.py
 from sklearn.svm import SVC
 
 

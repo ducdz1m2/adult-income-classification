@@ -12,11 +12,9 @@ from models.svm import SVM_Model
 from plot import Plotter
 from preprocessing import PreProcessing
 
-# ---- Đọc dữ liệu ----
 train_file = "data/adult.data"
 test_file = "data/adult.test"
 
-# ---- Các model ----
 models = {
     "Decision Tree": DecisionTree_Model(
         criterion="entropy", max_depth=10, min_samples_split=10, min_samples_leaf=1
@@ -37,7 +35,6 @@ all_runs = []
 
 results_store = {name: [] for name in models.keys()}
 
-# ---- Chạy holdout 10 lần ----
 for i in range(1, 11):
     print("=============================\nLan chay thu " + str(i))
 
@@ -45,7 +42,6 @@ for i in range(1, 11):
     X_train, y_train = pre_train.run()
 
     pre_test = PreProcessing(test_file, is_test=True)
-    # dùng cùng encoder với train
     pre_test.encoders = pre_train.encoders
     X_test, y_test = pre_test.run()
 
@@ -60,16 +56,12 @@ for i in range(1, 11):
     print(f">>> Test: X={X_test.shape}, y={y_test.shape}")
     for name, model in models.items():
 
-        # train model
         model.train(X_train, y_train)
 
-        # evaluate bằng Evaluator của bạn
         evaluator = Evaluator(model.model, X_test, y_test)
         print("\nKet qua mo hinh: " + name)
-        results = evaluator.evaluate()  # trả về dict: keys = "accuracy","precision","recall","f1_score"
+        results = evaluator.evaluate()
 
-        # Chuẩn hóa kết quả sang cấu trúc chung
-        # Một số evaluate có key "f1_score", mình map về "f1" để dễ tính trung bình
         acc = results.get("accuracy") if results is not None else None
         prec = results.get("precision") if results is not None else None
         rec = results.get("recall") if results is not None else None
@@ -80,7 +72,6 @@ for i in range(1, 11):
             else:
                 f1 = results.get("f1")
 
-        # lưu vào all_runs
         run_row = {
             "run": i,
             "model": name,
@@ -94,16 +85,13 @@ for i in range(1, 11):
         all_runs.append(run_row)
         results_store[name].append(run_row)
 
-# ---- Sau khi chạy 10 lần: lưu all_runs.csv ----
 all_runs_df = pd.DataFrame(all_runs)
 all_runs_df.to_csv("all_runs.csv", index=False)
 print("Saved detailed runs to all_runs.csv")
 
-# ---- Tính trung bình và chọn kết quả tốt nhất (theo avg F1) ----
 summary_rows = []
 for name, runs in results_store.items():
     df = pd.DataFrame(runs)
-    # loại những run fail (giá trị None)
     valid = df.dropna(subset=["accuracy", "f1"])
     if valid.empty:
         summary_rows.append({
@@ -121,7 +109,6 @@ for name, runs in results_store.items():
     avg_recall = valid["recall"].mean()
     avg_f1 = valid["f1"].mean()
 
-    # best run trong các run theo f1 (bạn có thể đổi sang accuracy nếu muốn)
     best_idx = valid["f1"].idxmax()
     best_run = valid.loc[best_idx].to_dict()
 
@@ -143,7 +130,6 @@ summary_df = pd.DataFrame(summary_rows)
 summary_df.to_csv("summary_best.csv", index=False)
 print("Saved summary (avg + best run info) to summary_best.csv")
 
-# ---- In model tốt nhất theo avg_f1 ----
 valid_summary = summary_df.dropna(subset=["avg_f1"])
 if not valid_summary.empty:
     best_overall = valid_summary.loc[valid_summary["avg_f1"].idxmax()]

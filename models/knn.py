@@ -2,7 +2,6 @@ from sklearn.neighbors import KNeighborsClassifier
 
 class KNN_Model:
     def __init__(self, **kwargs):
-        # Có thể truyền n_neighbors, weights, metric, p, v.v...
         self.model = KNeighborsClassifier(**kwargs)
 
     def train(self, X_train, y_train):
